@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real Estate & Property Listing - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-link { padding: 0px 9px; margin: 0 7px; background-color: #7575e0; color: #1a1a1a; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; }
+    .nav-link:hover { background-color: #007bff; color: white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transform: translateY(-2px); }
+    .nav-link.active { font-weight: 600; background-color: #007bff; color: white;}
+    .search-input { @apply w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition; }
+    .search-label { @apply block text-sm font-medium text-gray-700 mb-1; }
+  </style>
+</head>
+<body class="bg-blue-900 text-gray-900">
+  <header class="flex justify-between items-center p-6 flex-wrap shadow-md bg-white">
+    <div class="flex items-center">
+      <img src="data:image/jpeg;base64,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" alt="Logo" class="w-10 h-auto rounded-md" />
+      <h1 class="text-3xl font-extrabold text-blue-600 drop-shadow-sm ml-4">Real Estate & Property Listing</h1>
+    </div>
+    <nav class="flex flex-wrap justify-center mt-4 md:mt-0">
+      <a href="index.html" class="nav-link active">Home</a>
+      <a href="buy.html" class="nav-link">Buy</a>
+      <a href="rent.html" class="nav-link">Rent</a>
+      <a href="my-account.html" class="nav-link">My Account</a>
+      <a href="about.html" class="nav-link">About</a>
+    </nav>
+  </header>
+  <main class="p-8">
+    <h2 class="text-4xl font-bold text-center text-white mb-6 drop-shadow-md">Find Your Dream Home</h2>
+
+    <section class="px-8 py-6 mb-12 bg-white rounded-lg shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div>
+                <label for="location-search" class="search-label">Location</label>
+                <input type="text" id="location-search" placeholder="e.g., Rajarampuri" class="search-input">
+            </div>
+            <div>
+                <label for="property-type" class="search-label">Property Type</label>
+                <select id="property-type" class="search-input">
+                    <option value="all">All Types</option>
+                    <option value="bungalow">Bungalow</option>
+                    <option value="flat">Flat / Apartment</option>
+                    <option value="villa">Villa</option>
+                    <option value="row-house">Row House</option>
+                    <option value="penthouse">Penthouse</option>
+                    <option value="commercial">Commercial</option>
+                </select>
+            </div>
+            <div>
+                <label for="min-price" class="search-label">Min Price (₹)</label>
+                <input type="number" id="min-price" placeholder="e.g., 10000" class="search-input">
+            </div>
+            <div>
+                <label for="max-price" class="search-label">Max Price (₹)</label>
+                <input type="number" id="max-price" placeholder="e.g., 10000000" class="search-input">
+            </div>
+            <button id="search-btn" class="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition duration-300 h-12 text-lg font-semibold">Search</button>
+        </div>
+    </section>
+    
+    <section class="px-8">
+      <h2 class="text-3xl font-bold mb-8 text-center text-white">Featured Properties</h2>
+      <div id="properties-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        </div>
+       <div id="no-results" class="hidden text-center text-white mt-10 bg-black bg-opacity-30 p-8 rounded-lg">
+        <p class="text-xl">No properties found matching your criteria.</p>
+        <p>Try adjusting your search filters.</p>
+      </div>
+    </section>
+
+  </main>
+  <footer class="bg-gray-800 text-white text-center p-6 mt-12">
+    <p>&copy; 2025 Real Estate & Property Listing. All Rights Reserved.</p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const propertiesGrid = document.getElementById('properties-grid');
+        const noResultsDiv = document.getElementById('no-results');
+        const searchBtn = document.getElementById('search-btn');
+        const locationInput = document.getElementById('location-search');
+        const propertyTypeInput = document.getElementById('property-type');
+        const minPriceInput = document.getElementById('min-price');
+        const maxPriceInput = document.getElementById('max-price');
+
+        const createPropertyCard = (property) => {
+            const card = document.createElement('div');
+            card.className = 'property-card bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between';
+            const imageUrl = property.image;
+            const formattedPrice = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(property.price);
+            const priceLabel = property.status === 'For Rent' ? `${formattedPrice} / month` : formattedPrice;
+
+            card.innerHTML = `
+                <div>
+                  <img src="${imageUrl}" alt="${property.type}" class="w-full h-48 object-cover rounded-md mb-4" 
+                       onerror="this.onerror=null;this.src='https://placehold.co/400x250/EBF4FF/333333?text=Image+Not+Found';" />
+                  <div class="flex justify-between items-center">
+                    <h3 class="mt-2 font-semibold text-xl text-blue-800">${priceLabel}</h3>
+                    <span class="text-sm font-bold ${property.status === 'For Sale' ? 'text-blue-600' : 'text-green-600'}">${property.status}</span>
+                  </div>
+                  <p class="text-gray-700 mt-1">${property.type}</p>
+                  <p class="text-gray-500 text-sm mb-4">${property.location}</p>
+                </div>
+                <button class="view-more-btn mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300 w-full" data-property-id="${property.id}">
+                  View More
+                </button>
+            `;
+            return card;
+        };
+
+        const displayProperties = (propertyList) => {
+            propertiesGrid.innerHTML = ''; 
+            noResultsDiv.classList.toggle('hidden', propertyList.length > 0);
+            propertyList.forEach(property => {
+                propertiesGrid.appendChild(createPropertyCard(property));
+            });
+        };
+        
+        const filterProperties = () => {
+            const allProperties = window.getProperties(); // Fetch from localStorage
+            const locationQuery = locationInput.value.toLowerCase().trim();
+            const propertyTypeQuery = propertyTypeInput.value;
+            const minPrice = parseFloat(minPriceInput.value) || 0;
+            const maxPrice = parseFloat(maxPriceInput.value) || Infinity;
+
+            const filtered = allProperties.filter(property => {
+                const locationMatch = !locationQuery || property.location.toLowerCase().includes(locationQuery);
+                const typeMatch = propertyTypeQuery === 'all' || property.category === propertyTypeQuery;
+                const priceMatch = property.price >= minPrice && property.price <= maxPrice;
+                return locationMatch && typeMatch && priceMatch;
+            });
+            displayProperties(filtered);
+        };
+
+        propertiesGrid.addEventListener('click', (event) => {
+            if (event.target.classList.contains('view-more-btn')) {
+                window.location.href = `property.html?id=${event.target.dataset.propertyId}`;
+            }
+        });
+
+        // Initial Page Load
+        displayProperties(window.getProperties());
+        searchBtn.addEventListener('click', filterProperties);
+    });
+  </script>
+</body>
+</html>

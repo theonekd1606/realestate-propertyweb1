@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Firestore Database Seeder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div id="app" class="max-w-4xl w-full bg-white p-8 rounded-2xl shadow-xl">
+        <h1 class="text-4xl font-extrabold text-center text-blue-600 mb-2">Property Database Seeder</h1>
+        <p class="text-center text-gray-500 mb-8">This utility will add 40 sample properties to your Firestore database.</p>
+
+        <!-- Step 1: Firebase Config Input -->
+        <div id="config-step">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Step 1: Enter Your Firebase Config</h2>
+            <p class="mb-4 text-sm text-gray-600">Copy the <code class="bg-gray-200 p-1 rounded-md">firebaseConfig</code> object from your Firebase project settings and paste it into the text area below.</p>
+            <textarea id="firebase-config-input" rows="10" class="w-full p-4 border border-gray-300 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500" placeholder="Paste your firebaseConfig object here..."></textarea>
+            <button id="connect-btn" class="mt-4 w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md">
+                Connect to Firebase
+            </button>
+        </div>
+
+        <!-- Step 2: Seeding Process -->
+        <div id="seeding-step" class="hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Step 2: Add Properties</h2>
+            <p class="mb-4 text-sm text-gray-600">Connected to Firebase successfully. Click the button below to start adding properties.</p>
+            <button id="seed-btn" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-all duration-300 shadow-md">
+                Add 40 Properties to Firestore
+            </button>
+        </div>
+        
+        <!-- Status Log -->
+        <div id="status-log" class="mt-8 bg-gray-900 text-white rounded-lg p-4 h-64 overflow-y-auto font-mono text-sm hidden">
+            <p id="log-content"></p>
+        </div>
+
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // We will initialize Firebase here after getting the config
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // DOM Elements
+        const configStep = document.getElementById('config-step');
+        const seedingStep = document.getElementById('seeding-step');
+        const connectBtn = document.getElementById('connect-btn');
+        const seedBtn = document.getElementById('seed-btn');
+        const configInput = document.getElementById('firebase-config-input');
+        const statusLog = document.getElementById('status-log');
+        const logContent = document.getElementById('log-content');
+
+        let db;
+
+        function log(message) {
+            console.log(message);
+            logContent.innerHTML += `> ${message}<br/>`;
+            statusLog.scrollTop = statusLog.scrollHeight;
+        }
+
+        // --- Sample Property Data ---
+        const properties = [
+            // Add 40 properties here
+            { status: 'For Sale', type: '3 BHK Bungalow', price: 9500000, location: 'Kasba Bawada, Kolhapur', area: 2000, facing: 'East', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=3+BHK+Bungalow', description: 'A beautiful and spacious bungalow in a prime location. Features modern amenities and a serene environment.' },
+            { status: 'For Sale', type: '2 BHK Flat', price: 4200000, location: 'Rajarampuri, Kolhapur', area: 1100, facing: 'North', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=2+BHK+Flat', description: 'Well-maintained flat in the heart of the city, perfect for a small family.' },
+            { status: 'For Rent', type: '1 BHK Apartment', price: 8500, location: 'Shahupuri, Kolhapur', area: 650, facing: 'West', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=1+BHK+Apartment', description: 'Cozy apartment for rent, ideal for students or bachelors. Close to market and public transport.' },
+            { status: 'For Sale', type: '4 BHK Row House', price: 12500000, location: 'Nagala Park, Kolhapur', area: 2500, facing: 'East', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=4+BHK+Row+House', description: 'Luxurious row house with a private garden and premium fittings.' },
+            { status: 'For Rent', type: '2 BHK Furnished Flat', price: 18000, location: 'Cyber Chowk, Kolhapur', area: 1200, facing: 'South', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=Furnished+Flat', description: 'Fully furnished flat with all modern amenities available for immediate rent.' },
+            { status: 'For Sale', type: 'Plot', price: 6000000, location: 'Morewadi, Kolhapur', area: 2400, facing: 'N/A', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=Residential+Plot', description: 'NA plot in a rapidly developing area. Great for investment or building your dream home.' },
+            { status: 'For Rent', type: '3 BHK Penthouse', price: 35000, location: 'Tarabai Park, Kolhapur', area: 2200, facing: 'North-East', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=Penthouse', description: 'Exclusive penthouse with a stunning city view and a private terrace.' },
+            { status: 'For Sale', type: '1 RK Studio', price: 2000000, location: 'Sane Guruji Vasahat, Kolhapur', area: 450, facing: 'East', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=1+RK+Studio', description: 'Compact and affordable studio apartment, perfect for investment.' },
+            { status: 'For Rent', type: 'Office Space', price: 25000, location: 'Station Road, Kolhapur', area: 1000, facing: 'West', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=Office+Space', description: 'Commercial office space on a busy road, suitable for startups and small businesses.' },
+            { status: 'For Sale', type: '5 BHK Villa', price: 25000000, location: 'Udyamnagar, Kolhapur', area: 4000, facing: 'North', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=5+BHK+Villa', description: 'Ultra-luxurious villa with a swimming pool and home theatre.' },
+            // ... adding more properties
+            { status: 'For Sale', type: '2 BHK Apartment', price: 4800000, location: 'Kasba Bawada, Kolhapur', area: 1150, facing: 'West', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=2+BHK+Apartment', description: 'A modern apartment in a new building with excellent connectivity.' },
+            { status: 'For Rent', type: '1 BHK Flat', price: 7500, location: 'Rajarampuri, Kolhapur', area: 600, facing: 'East', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=1+BHK+Flat', description: 'Affordable 1 BHK flat in a residential society.' },
+            { status: 'For Sale', type: '3 BHK Duplex', price: 8800000, location: 'Shahupuri, Kolhapur', area: 1900, facing: 'North-West', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=3+BHK+Duplex', description: 'Spacious duplex with elegant interiors and ample natural light.' },
+            { status: 'For Rent', type: 'Shop', price: 15000, location: 'Mahadwar Road, Kolhapur', area: 300, facing: 'South', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=Commercial+Shop', description: 'Shop available for rent in a high footfall market area.' },
+            { status: 'For Sale', type: 'Agricultural Land', price: 15000000, location: 'Outskirts of Kolhapur', area: 87120, facing: 'N/A', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=Farm+Land', description: '2 acres of fertile agricultural land with water source.' },
+            { status: 'For Rent', type: '2 BHK Row House', price: 16000, location: 'Nagala Park, Kolhapur', area: 1400, facing: 'East', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=2+BHK+Row+House', description: 'Independent row house for rent in a peaceful and green locality.' },
+            { status: 'For Sale', type: '2 BHK Flat', price: 5500000, location: 'Tarabai Park, Kolhapur', area: 1250, facing: 'North', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=2+BHK+Luxury+Flat', description: 'Premium 2 BHK flat in one of the most sought-after locations.' },
+            { status: 'For Rent', type: '3 BHK Apartment', price: 22000, location: 'Sane Guruji Vasahat, Kolhapur', area: 1600, facing: 'West', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=3+BHK+Apartment', description: 'Large 3 BHK apartment in a gated community with all amenities.' },
+            { status: 'For Sale', type: 'Commercial Showroom', price: 30000000, location: 'Station Road, Kolhapur', area: 2000, facing: 'East', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=Showroom', description: 'Main road facing showroom space, ideal for brands and large stores.' },
+            { status: 'For Rent', type: 'Godown/Warehouse', price: 40000, location: 'Udyamnagar, Kolhapur', area: 5000, facing: 'N/A', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=Warehouse', description: 'Spacious warehouse with easy access for heavy vehicles.' },
+            { status: 'For Sale', type: '3 BHK Flat', price: 6500000, location: 'Rajarampuri, Kolhapur', area: 1500, facing: 'South-East', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=3+BHK+Flat', description: 'Ready to move in 3 BHK flat with modern interiors and car parking.' },
+            { status: 'For Rent', type: "Bachelor's Room", price: 5000, location: 'Near Shivaji University', area: 250, facing: 'North', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=Single+Room', description: 'Single room with attached bathroom for students or working professionals.' },
+            { status: 'For Sale', type: 'Old House (Resale)', price: 7000000, location: 'Mangalwar Peth, Kolhapur', area: 1800, facing: 'West', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=Old+House', description: 'An old construction with potential for renovation in the heart of the old city.' },
+            { status: 'For Rent', type: '2 BHK Penthouse', price: 28000, location: 'Kasba Bawada, Kolhapur', area: 1700, facing: 'East', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=2+BHK+Penthouse', description: 'Penthouse with a large open terrace, perfect for enjoying the weather.' },
+            { status: 'For Sale', type: '1 BHK Flat', price: 2800000, location: 'Morewadi, Kolhapur', area: 700, facing: 'North', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=1+BHK+Flat', description: 'New 1 BHK flat in a developing area, great value for money.' },
+            { status: 'For Rent', type: '3 BHK Furnished Bungalow', price: 45000, location: 'Tarabai Park, Kolhapur', area: 2400, facing: 'South', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=Furnished+Bungalow', description: 'Elegantly furnished bungalow for rent in a posh locality.' },
+            { status: 'For Sale', type: 'Industrial Shed', price: 9000000, location: 'MIDC Shiroli, Kolhapur', area: 6000, facing: 'N/A', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=Industrial+Shed', description: 'Industrial shed suitable for manufacturing or storage purposes.' },
+            { status: 'For Rent', type: '2 BHK Apartment', price: 12000, location: 'Cyber Chowk, Kolhapur', area: 1000, facing: 'West', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=2+BHK+Apartment', description: 'A well-ventilated 2 BHK apartment available for rent.' },
+            { status: 'For Sale', type: 'Farmhouse', price: 17500000, location: 'Panhala, near Kolhapur', area: 43560, facing: 'East', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=Farmhouse', description: 'A beautiful 1-acre farmhouse with a small cottage, perfect for weekend getaways.' },
+            { status: 'For Rent', type: 'Office Cubicle', price: 6000, location: 'Venus Corner, Kolhapur', area: 100, facing: 'N/A', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=Coworking+Space', description: 'A single cubicle in a shared coworking space with all office amenities.' },
+            { status: 'For Sale', type: '2 BHK Resale Flat', price: 3800000, location: 'Ramanmala, Kolhapur', area: 950, facing: 'North', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=Resale+Flat', description: 'A 5-year-old resale flat in a good condition, located centrally.' },
+            { status: 'For Rent', type: '1 RK for Family', price: 6500, location: 'Subhash Nagar, Kolhapur', area: 500, facing: 'East', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=1+RK', description: '1 RK apartment suitable for a small family in a quiet residential area.' },
+            { status: 'For Sale', type: '4 BHK Apartment', price: 11000000, location: 'Nagala Park, Kolhapur', area: 2300, facing: 'West', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=4+BHK+Apartment', description: 'Spacious 4 BHK apartment with servant quarters in a premium building.' },
+            { status: 'For Rent', type: '3 BHK Villa', price: 30000, location: 'Kalamba, Kolhapur', area: 2000, facing: 'North-East', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=3+BHK+Villa', description: 'Independent villa for rent with a small garden, near Kalamba lake.' },
+            { status: 'For Sale', type: 'NA Plot', price: 4000000, location: 'Shingnapur Road, Kolhapur', area: 1500, facing: 'South', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=NA+Plot', description: 'Collector-approved Non-Agricultural plot in a gated layout.' },
+            { status: 'For Rent', type: 'Paying Guest (PG) for Girls', price: 4500, location: 'Near KITT College', area: 150, facing: 'N/A', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=Girls+PG', description: 'Paying guest accommodation for girls on a sharing basis, with meals included.' },
+            { status: 'For Sale', type: 'Shop', price: 5000000, location: 'Laxmipuri, Kolhapur', area: 250, facing: 'West', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=Commercial+Shop', description: 'A small shop in the main commercial market, excellent for business.' },
+            { status: 'For Rent', type: '2 BHK Bungalow', price: 20000, location: 'Phulewadi, Kolhapur', area: 1500, facing: 'East', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=2+BHK+Bungalow', description: 'A charming 2 BHK independent bungalow for rent.' },
+            { status: 'For Sale', type: 'Penthouse', price: 15000000, location: 'Rajarampuri, Kolhapur', area: 2800, facing: 'North', image: 'https://placehold.co/600x400/3B82F6/FFFFFF?text=Luxury+Penthouse', description: 'A luxurious duplex penthouse with top-of-the-line amenities and panoramic views.' },
+            { status: 'For Rent', type: 'Paying Guest (PG) for Boys', price: 4000, location: 'Near Bus Stand', area: 150, facing: 'N/A', image: 'https://placehold.co/600x400/10B981/FFFFFF?text=Boys+PG', description: 'Affordable PG accommodation for boys with basic amenities.' }
+        ];
+
+
+        // Event Listener for Connect Button
+        connectBtn.addEventListener('click', () => {
+            const configValue = configInput.value.trim();
+            if (!configValue) {
+                alert('Please paste your Firebase config object.');
+                return;
+            }
+
+            try {
+                // This is a bit of a hack to parse the config object from the string
+                const firebaseConfig = (new Function(`return ${configValue}`))();
+                
+                log('Initializing Firebase...');
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                log('Firebase Initialized Successfully!');
+                log('Connected to Firestore.');
+
+                configStep.classList.add('hidden');
+                seedingStep.classList.remove('hidden');
+                statusLog.classList.remove('hidden');
+
+            } catch (error) {
+                log(`Error: ${error.message}`);
+                alert('Invalid Firebase config. Please check the object you pasted.');
+                console.error("Firebase Init Error:", error);
+            }
+        });
+
+
+        // Event Listener for Seed Button
+        seedBtn.addEventListener('click', async () => {
+            seedBtn.disabled = true;
+            seedBtn.textContent = 'Seeding...';
+            log(`Starting to add ${properties.length} properties to the 'properties' collection...`);
+
+            try {
+                // Use a batch write for efficiency
+                const batch = writeBatch(db);
+                const propertiesCollection = collection(db, "properties");
+
+                properties.forEach((property, index) => {
+                    // Firestore will auto-generate a unique ID for each new document
+                    const newDocRef = doc(propertiesCollection); 
+                    batch.set(newDocRef, property);
+                    log(`Queued property ${index + 1}: ${property.type} in ${property.location}`);
+                });
+
+                await batch.commit();
+
+                log('------------------------------------');
+                log('SUCCESS! All properties have been added to your Firestore database.');
+                seedBtn.textContent = 'Seeding Complete!';
+                seedBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                seedBtn.classList.add('bg-gray-400');
+
+            } catch (error) {
+                log(`Error: ${error.message}`);
+                console.error("Firestore Seeding Error:", error);
+                seedBtn.disabled = false;
+                seedBtn.textContent = 'Try Again';
+            }
+        });
+    </script>
+</body>
+</html>

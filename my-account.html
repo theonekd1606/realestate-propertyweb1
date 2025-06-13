@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real Estate - My Account</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-link { padding: 0px 9px; margin: 0 7px; background-color: #7575e0; color: #1a1a1a; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; }
+    .nav-link:hover { background-color: #007bff; color: white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transform: translateY(-2px); }
+    .nav-link.active { font-weight: 600; background-color: #007bff; color: white;}
+    .form-input { @apply mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500; }
+    .form-label { @apply block text-sm font-medium text-gray-700; }
+  </style>
+</head>
+<body class="bg-blue-900 text-gray-900">
+  <header class="flex justify-between items-center p-6 flex-wrap shadow-md bg-white">
+    <div class="flex items-center">
+      <img src="data:image/jpeg;base64,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" alt="Logo" class="w-10 h-auto rounded-md" />
+      <h1 class="text-3xl font-extrabold text-blue-600 drop-shadow-sm ml-4">Real Estate & Property Listing</h1>
+    </div>
+    <nav class="flex flex-wrap justify-center mt-4 md:mt-0">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="buy.html" class="nav-link">Buy</a>
+      <a href="rent.html" class="nav-link">Rent</a>
+      <a href="my-account.html" class="nav-link active">My Account</a>
+      <a href="about.html" class="nav-link">About</a>
+    </nav>
+  </header>
+  
+  <main id="login-section" class="p-8 max-w-lg mx-auto mt-10">
+      <div class="bg-white p-8 rounded-lg shadow-2xl">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">Account Login</h2>
+        <form id="login-form">
+          <div class="mb-4">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" id="email" required class="form-input" placeholder="Enter any valid email">
+          </div>
+          <div class="mb-6">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" required class="form-input" placeholder="Enter any password">
+          </div>
+          <p id="login-error" class="text-red-500 text-sm text-center mb-4 hidden">Please enter a valid email and password.</p>
+          <div>
+            <button type="submit" class="w-full bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 font-semibold">Login</button>
+          </div>
+        </form>
+      </div>
+  </main>
+
+  <div id="account-content" style="display: none;">
+    <main class="p-8 max-w-6xl mx-auto">
+        <div class="mb-12">
+          <h3 class="text-3xl font-bold mb-6 text-white text-center">My Listed Properties</h3>
+          <div id="my-properties-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+          <div id="no-properties-message" class="hidden text-center text-white mt-10 bg-black bg-opacity-30 p-8 rounded-lg">
+              <p class="text-xl">You have not listed any properties yet. Use the form below to add one.</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-lg shadow-2xl">
+          <h3 id="form-title" class="text-3xl font-bold mb-6 text-gray-800 text-center">Add a New Property</h3>
+          <form id="property-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <input type="hidden" id="property-id">
+            
+            <div class="md:col-span-2">
+              <label for="property-type" class="form-label">Property Type (e.g., 3 BHK Bungalow)</label>
+              <input type="text" id="property-type" required class="form-input">
+            </div>
+            
+            <div>
+              <label for="property-price" class="form-label">Price (INR)</label>
+              <input type="number" id="property-price" placeholder="e.g., 9500000" required class="form-input">
+            </div>
+
+            <div>
+              <label for="property-status" class="form-label">Status</label>
+              <select id="property-status" required class="form-input">
+                <option value="For Sale">For Sale</option>
+                <option value="For Rent">For Rent</option>
+              </select>
+            </div>
+            
+            <div class="md:col-span-2">
+              <label for="property-location" class="form-label">Location (e.g., Kasba Bawada, Kolhapur)</label>
+              <input type="text" id="property-location" required class="form-input">
+            </div>
+
+            <div class="md:col-span-2">
+               <label for="property-category" class="form-label">Category</label>
+               <select id="property-category" required class="form-input">
+                  <option value="bungalow">Bungalow</option>
+                  <option value="flat">Flat / Apartment</option>
+                  <option value="villa">Villa</option>
+                  <option value="row-house">Row House</option>
+                  <option value="penthouse">Penthouse</option>
+                  <option value="commercial">Commercial</option>
+               </select>
+            </div>
+
+             <div class="md:col-span-2">
+              <label for="property-image-upload" class="form-label">Property Image</label>
+              <input type="file" id="property-image-upload" accept="image/*" class="form-input">
+              <img id="image-preview" src="" alt="Image Preview" class="mt-4 rounded-lg shadow-md max-h-48 hidden"/>
+              <input type="hidden" id="property-image-base64"> </div>
+
+            <div class="md:col-span-2 mt-4 flex space-x-4">
+              <button type="submit" id="submit-btn" class="w-full bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 font-semibold">Add Property</button>
+              <button type="button" id="cancel-btn" class="w-full bg-gray-500 text-white px-4 py-3 rounded-md hover:bg-gray-600 font-semibold hidden">Cancel Edit</button>
+            </div>
+          </form>
+        </div>
+    </main>
+  </div>
+  <footer class="bg-gray-800 text-white text-center p-6 mt-12">
+    <p>&copy; 2025 Real Estate & Property Listing. All Rights Reserved.</p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Section Elements
+        const loginSection = document.getElementById('login-section');
+        const accountContent = document.getElementById('account-content');
+        
+        // Form and Control Elements
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const propertyForm = document.getElementById('property-form');
+        const formTitle = document.getElementById('form-title');
+        const submitBtn = document.getElementById('submit-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const myPropertiesList = document.getElementById('my-properties-list');
+        const noPropertiesMessage = document.getElementById('no-properties-message');
+        const imageUploadInput = document.getElementById('property-image-upload');
+        const imagePreview = document.getElementById('image-preview');
+
+        // --- LOGIN LOGIC ---
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
+
+            // Check for valid email format and a non-empty password
+            if (emailRegex.test(email) && password.trim() !== '') {
+                loginSection.style.display = 'none';
+                accountContent.style.display = 'block';
+                displayMyProperties(); // Load properties after successful login
+                loginError.classList.add('hidden');
+            } else {
+                loginError.classList.remove('hidden');
+            }
+        });
+
+        const resetForm = () => {
+            propertyForm.reset();
+            imagePreview.classList.add('hidden');
+            imagePreview.src = '';
+            document.getElementById('property-id').value = '';
+            document.getElementById('property-image-base64').value = '';
+            formTitle.textContent = 'Add a New Property';
+            submitBtn.textContent = 'Add Property';
+            submitBtn.classList.replace('bg-green-600', 'bg-blue-600');
+            cancelBtn.classList.add('hidden');
+        };
+
+        const populateFormForEdit = (property) => {
+            document.getElementById('property-id').value = property.id;
+            document.getElementById('property-type').value = property.type;
+            document.getElementById('property-price').value = property.price;
+            document.getElementById('property-status').value = property.status;
+            document.getElementById('property-location').value = property.location;
+            document.getElementById('property-category').value = property.category;
+            
+            imagePreview.src = property.image;
+            imagePreview.classList.remove('hidden');
+            document.getElementById('property-image-base64').value = property.image;
+            
+            formTitle.textContent = 'Edit Property';
+            submitBtn.textContent = 'Update Property';
+            submitBtn.classList.replace('bg-blue-600', 'bg-green-600');
+            cancelBtn.classList.remove('hidden');
+            
+            propertyForm.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        const displayMyProperties = () => {
+            const myProperties = window.getProperties(); 
+            myPropertiesList.innerHTML = '';
+            noPropertiesMessage.classList.toggle('hidden', myProperties.length > 0);
+
+            myProperties.forEach(property => {
+                const card = document.createElement('div');
+                card.className = 'property-card bg-white p-4 rounded-lg shadow-lg flex flex-col justify-between';
+                const formattedPrice = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(property.price);
+                const priceLabel = property.status === 'For Rent' ? `${formattedPrice} / month` : formattedPrice;
+
+                card.innerHTML = `
+                    <div>
+                      <img src="${property.image}" alt="${property.type}" class="w-full h-40 object-cover rounded-md mb-3" onerror="this.onerror=null;this.src='https://placehold.co/400x250/EBF4FF/333333?text=Image+Not+Found';">
+                      <h4 class="font-bold text-lg">${property.type}</h4>
+                      <p class="text-gray-600 text-sm">${property.location}</p>
+                      <p class="text-blue-700 font-semibold mt-1">${priceLabel}</p>
+                    </div>
+                    <div class="mt-4 flex space-x-2">
+                      <button class="edit-btn w-full bg-yellow-500 text-white px-3 py-1.5 rounded-md hover:bg-yellow-600 text-sm" data-id="${property.id}">Edit</button>
+                      <button class="delete-btn w-full bg-red-600 text-white px-3 py-1.5 rounded-md hover:bg-red-700 text-sm" data-id="${property.id}">Delete</button>
+                    </div>
+                `;
+                myPropertiesList.appendChild(card);
+            });
+        };
+        
+        propertyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const properties = window.getProperties();
+            const propertyId = document.getElementById('property-id').value;
+
+            const newPropertyData = {
+                type: document.getElementById('property-type').value.trim(),
+                price: parseFloat(document.getElementById('property-price').value),
+                status: document.getElementById('property-status').value,
+                location: document.getElementById('property-location').value.trim(),
+                category: document.getElementById('property-category').value,
+                image: '',
+            };
+
+            const imageFile = imageUploadInput.files[0];
+            if (imageFile) {
+                newPropertyData.image = await window.readFileAsBase64(imageFile);
+            } else if (propertyId) {
+                newPropertyData.image = document.getElementById('property-image-base64').value;
+            } else {
+                alert("Please select an image for the property.");
+                return;
+            }
+
+            if (propertyId) { // Update existing property
+                const index = properties.findIndex(p => p.id == propertyId);
+                if (index !== -1) {
+                    properties[index] = { id: properties[index].id, ...newPropertyData };
+                }
+            } else { // Add new property
+                newPropertyData.id = Date.now();
+                properties.push(newPropertyData);
+            }
+
+            window.saveProperties(properties);
+            displayMyProperties();
+            resetForm();
+        });
+
+        imageUploadInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                imagePreview.src = URL.createObjectURL(file);
+                imagePreview.classList.remove('hidden');
+            }
+        });
+
+        myPropertiesList.addEventListener('click', (e) => {
+            const target = e.target;
+            const propertyId = target.dataset.id;
+            if (!propertyId) return;
+
+            if (target.classList.contains('edit-btn')) {
+                const propertyToEdit = window.getPropertyById(propertyId);
+                if (propertyToEdit) populateFormForEdit(propertyToEdit);
+            }
+
+            if (target.classList.contains('delete-btn')) {
+                if (confirm('Are you sure you want to delete this property? This cannot be undone.')) {
+                    let properties = window.getProperties();
+                    properties = properties.filter(p => p.id != propertyId);
+                    window.saveProperties(properties);
+                    displayMyProperties();
+                }
+            }
+        });
+
+        cancelBtn.addEventListener('click', resetForm);
+
+    });
+  </script>
+</body>
+</html>
